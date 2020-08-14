@@ -1331,6 +1331,27 @@ class Collection implements ArrayAccess, Enumerable
     }
 
     /**
+     * Ensure all items match the given type.
+     *
+     * @param  string  $type
+     * @return static
+     */
+    public function ensureInstancesOf($type)
+    {
+        return $this->each(function ($value) use ($type) {
+            if (! $value instanceof $type) {
+                throw new \InvalidArgumentException(
+                    sprintf(
+                        'All items should match the "%s" type, while "%s" was encountered.',
+                        is_string($type) ? $type : get_class($type),
+                        is_object($value) ? get_class($value) : gettype($value)
+                    )
+                );
+            }
+        });
+    }
+
+    /**
      * Get a base Support collection instance from this collection.
      *
      * @return \Illuminate\Support\Collection
